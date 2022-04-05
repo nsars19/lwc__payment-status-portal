@@ -1,0 +1,151 @@
+<template>
+  <lightning-card title="Payment Status Portal" icon-name="standard:account">
+    <div class="slds-var-m-around_medium">
+      <p class="slds-var-m-bottom_medium">
+        Use a percent sign (%) as a wildcard to match one or more values. The
+        wildcard can be used at the beginning and end of the value. eg.
+        university% will match any supplier name that begins with university.
+        %university will match any supplier that ends with university.
+        %university% will match any supplier than contains university.
+      </p>
+      <label for="supplierName">
+        Supplier Name
+        <lightning-helptext
+          content="Use a percent sign (%) as a wildcard to match one or more values. The wildcard can be used at the beginning and end of the value. eg. university% will match any supplier name that begins with university. %university will match any supplier that ends with university. %university% will match any supplier than contains university."
+        ></lightning-helptext>
+      </label>
+      <lightning-input
+        id="supplierName"
+        variant="label-hidden"
+        value={vendorName}
+        onchange={vendorNameChangeHandler}
+        required="true"
+        max-length="150"
+        message-when-too-long="Only 150 characters are allowed."
+        message-when-value-missing="Please enter a vendor name."
+      ></lightning-input>
+      <label for="poNumber">
+        PO Number
+        <lightning-helptext
+          content="Whitespace is stripped before checking for records."
+        ></lightning-helptext>
+      </label>
+      <lightning-input
+        id="poNumber"
+        variant="label-hidden"
+        value={poNumber}
+        onchange={poNumberChangeHandler}
+        max-length="10"
+        message-when-too-long="Only 10 characters are allowed."
+      ></lightning-input>
+      <label for="invoiceId">
+        Invoice Number
+        <lightning-helptext
+          content="Whitespace is stripped before checking for records."
+        ></lightning-helptext>
+      </label>
+      <lightning-input
+        id="invoiceId"
+        variant="label-hidden"
+        value={invoiceId}
+        onchange={invoiceIdChangeHandler}
+        max-length="30"
+        message-when-too-long="Only 30 characters are allowed."
+      ></lightning-input>
+      <div class="input-btn-spacer"></div>
+      <div class="btn-group">
+        <lightning-button
+          variant="brand"
+          label="Check Status"
+          title="Check Status"
+          onclick={handleClick}
+        ></lightning-button>
+        <lightning-button
+          variant="destructive"
+          label="Clear Results"
+          title="Clear Results"
+          onclick={handleClear}
+        ></lightning-button>
+      </div>
+    </div>
+    <template if:true={isLoading}>
+      <p class="slds-var-p-around_medium">Looking for records...</p>
+    </template>
+    <template if:true={paginate}>
+      <div class="payment-status-pagination-wrapper slds-var-m-around_medium">
+        <c-paginator
+          onprevious={handlePrevious}
+          onnext={handleNext}
+          onfirst={handleFirst}
+          onlast={handleLast}
+          ongotopage={handleGotoCustomPage}
+        ></c-paginator>
+        <p>Showing records {start} - {finish} of {recordTotal}</p>
+      </div>
+    </template>
+    <template if:true={records.length}>
+      <div class="slds-border_top">
+        <lightning-accordion allow-multiple-sections-open>
+          <template for:each={displayRecords} for:item="record" for:index="idx">
+            <lightning-accordion-section
+              name={record.InvoiceID}
+              label={record.labelText}
+              key={record.InvoiceID}
+            >
+              <lightning-button-menu
+                slot="action"
+                alternative-text="Show menu"
+                icon-size="x-small"
+                menu-alignment="right"
+              >
+                <lightning-menu-item
+                  value="New"
+                  label="Menu Item One"
+                ></lightning-menu-item>
+                <lightning-menu-item
+                  value="Edit"
+                  label="Menu Item Two"
+                ></lightning-menu-item>
+              </lightning-button-menu>
+              <c-record-detail record={record}></c-record-detail>
+            </lightning-accordion-section>
+          </template>
+        </lightning-accordion>
+      </div>
+      <div
+        class="slds-border_top slds-var-p-around_medium slds-text-heading_small"
+      >
+        <p><b>Total Sum of Invoice(s)</b></p>
+        <p>{recordSum}</p>
+      </div>
+    </template>
+    <template if:true={noRecords}>
+      <p class="slds-var-p-around_medium">No records were found.</p>
+    </template>
+    <template if:true={hasError}>
+      <div class="slds-var-p-around_medium">
+        <div class="slds-box">
+          <p>{errorDetail.message}</p>
+          <template if:true={errorDetail.vendorName}>
+            <div class="slds-var-m-bottom_medium">
+              <p class="slds-var-m-bottom_xx-small">Vendor Name</p>
+              <p>{errorDetail.vendorName}</p>
+            </div>
+          </template>
+          <template if:true={errorDetail.poID}>
+            <div class="slds-var-m-bottom_medium">
+              <p class="slds-var-m-bottom_xx-small">PO Number</p>
+              <p>{errorDetail.poID}</p>
+            </div>
+          </template>
+          <template if:true={errorDetail.invoiceId}>
+            <div class="slds-var-m-bottom_medium">
+              <p class="slds-var-m-bottom_xx-small">Invoice ID</p>
+              <p>{errorDetail.invoiceId}</p>
+            </div>
+          </template>
+        </div>
+      </div>
+    </template>
+  </lightning-card>
+</template>

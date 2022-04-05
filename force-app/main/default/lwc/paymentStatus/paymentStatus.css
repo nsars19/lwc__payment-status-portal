@@ -1,0 +1,26 @@
+.input-btn-spacer {
+  height: 10px;
+}
+
+.hidden {
+  display: none;
+}
+
+.btn-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+p:first-child {
+  font-weight: bold;
+}
+
+.bad-input-value {
+  border: 1px solid rgb(255, 85, 85);
+}
+
+.payment-status-pagination-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

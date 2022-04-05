@@ -1,0 +1,66 @@
+<template>
+  <div class="slds-box">
+    <template if:true={record.Payment_Status}>
+      <div class="slds-var-m-bottom_medium">
+        <p class="slds-var-m-bottom_xx-small">Payment Status</p>
+        <p>{record.Payment_Status}</p>
+      </div>
+    </template>
+    <template if:false={record.Payment_DT}>
+      <template if:true={record.Scheduled_Pay_DT}>
+        <div class="slds-var-m-bottom_medium">
+          <p class="slds-var-m-bottom_xx-small">Scheduled Payment Date</p>
+          <p>{record.Scheduled_Pay_DT}</p>
+        </div>
+      </template>
+    </template>
+    <template if:true={record.Payment_DT}>
+      <div class="slds-var-m-bottom_medium">
+        <p class="slds-var-m-bottom_xx-small">Payment Date</p>
+        <p>{record.Payment_DT}</p>
+      </div>
+    </template>
+    <template if:true={record.Sum_Monetary_Amount}>
+      <div class="slds-var-m-bottom_medium">
+        <p class="slds-var-m-bottom_xx-small">{paymentLabel}</p>
+        <p>{record.Sum_Monetary_Amount}</p>
+      </div>
+    </template>
+    <template if:true={record.Payment_Method}>
+      <div class="slds-var-m-bottom_medium">
+        <p class="slds-var-m-bottom_xx-small">Payment Method</p>
+        <p>{record.Payment_Method}</p>
+      </div>
+    </template>
+    <template if:true={record.Payment_ID_Ref}>
+      <div class="slds-var-m-bottom_medium">
+        <p class="slds-var-m-bottom_xx-small">Payment Number</p>
+        <p>{record.Payment_ID_Ref}</p>
+      </div>
+    </template>
+    <template if:true={record.InvoiceID}>
+      <div class="slds-var-m-bottom_medium">
+        <p class="slds-var-m-bottom_xx-small">Invoice Number</p>
+        <p>{record.InvoiceID}</p>
+      </div>
+    </template>
+    <template if:true={record.poID}>
+      <div class="slds-var-m-bottom_medium">
+        <p class="slds-var-m-bottom_xx-small">PO Number</p>
+        <p>{record.poID}</p>
+      </div>
+    </template>
+    <template if:true={record.Vendor_ID}>
+      <div class="slds-var-m-bottom_medium">
+        <p class="slds-var-m-bottom_xx-small">Vendor ID</p>
+        <p>{record.Vendor_ID}</p>
+      </div>
+    </template>
+    <template if:true={record.Vendor_Name}>
+      <div class="slds-var-m-bottom_medium">
+        <p class="slds-var-m-bottom_xx-small">Supplier Name</p>
+        <p>{record.Vendor_Name}</p>
+      </div>
+    </template>
+  </div>
+</template>
