@@ -7,6 +7,12 @@
       </div>
     </template>
     <template if:false={record.Payment_DT}>
+      <template if:true={record.Payment_Hold}>
+        <div class="slds-var-m-bottom_medium">
+          <p class="slds-var-m-bottom_xx-small">Payment On Hold</p>
+          <p>{record.Payment_Hold}</p>
+        </div>
+      </template>
       <template if:true={record.Scheduled_Pay_DT}>
         <div class="slds-var-m-bottom_medium">
           <p class="slds-var-m-bottom_xx-small">Scheduled Payment Date</p>
