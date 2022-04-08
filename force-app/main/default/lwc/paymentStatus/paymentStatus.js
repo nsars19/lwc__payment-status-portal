@@ -188,7 +188,7 @@ export default class PaymentStatus extends LightningElement {
         " - " +
         this.formatPayment(r.Sum_Monetary_Amount),
       poID: r["PO-ID"],
-      Payment_Hold: r.Payment_Hold && r.Payment_Hold === "Y" ? "Yes" : "No"
+      Payment_Hold: r.Payment_Hold && r.Payment_Hold === "Y" ? "Yes" : ""
     }));
   }
 
