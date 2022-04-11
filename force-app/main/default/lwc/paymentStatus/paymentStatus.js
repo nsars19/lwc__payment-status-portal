@@ -117,7 +117,7 @@ export default class PaymentStatus extends LightningElement {
         this.records = formattedRecords;
         this.recordSum = this.currencyFormatter(
           records.reduce((total, record) => {
-            let val = parseFloat(record.Sum_Monetary_Amount);
+            let val = parseFloat(record.Paid_Amount);
             if (isNaN(val)) {
               val = 0;
             }
@@ -181,12 +181,12 @@ export default class PaymentStatus extends LightningElement {
         r.Payment_Status && r.Payment_Status.toLowerCase() === "p"
           ? "Paid"
           : "Unpaid",
-      Sum_Monetary_Amount: this.currencyFormatter(r.Sum_Monetary_Amount),
+      Paid_Amount: this.currencyFormatter(r.Paid_Amount),
       labelText:
         "Invoice ID: " +
         r.InvoiceID +
         " - " +
-        this.formatPayment(r.Sum_Monetary_Amount),
+        this.formatPayment(r.Paid_Amount),
       poID: r["PO-ID"],
       Payment_Hold: r.Payment_Hold && r.Payment_Hold === "Y" ? "Yes" : ""
     }));

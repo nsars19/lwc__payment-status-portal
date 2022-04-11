@@ -3,7 +3,7 @@ export const success = {
     {
       Vendor_ID: "0000078122",
       Vendor_Name: "LOWES HOME CENTERS INC",
-      Sum_Monetary_Amount: "22.48",
+      Paid_Amount: "22.48",
       InvoiceID: "99353",
       "PO-ID": "WJ00563007",
       Payment_Status: "P",
@@ -15,7 +15,7 @@ export const success = {
     {
       Vendor_ID: "0000078122",
       Vendor_Name: "LOWES HOME CENTERS INC",
-      Sum_Monetary_Amount: "1349.9",
+      Paid_Amount: "1349.9",
       InvoiceID: "976266",
       "PO-ID": "WJ00563007",
       Payment_Status: "P",
@@ -27,7 +27,7 @@ export const success = {
     {
       Vendor_ID: "0000078122",
       Vendor_Name: "LOWES HOME CENTERS INC",
-      Sum_Monetary_Amount: "79.14",
+      Paid_Amount: "79.14",
       InvoiceID: "985125",
       "PO-ID": "WJ00563007",
       Payment_Status: "P",
@@ -39,7 +39,7 @@ export const success = {
     {
       Vendor_ID: "0000078122",
       Vendor_Name: "LOWES HOME CENTERS INC",
-      Sum_Monetary_Amount: "280.06",
+      Paid_Amount: "280.06",
       InvoiceID: "8784106062017",
       "PO-ID": "WJ00563007",
       Payment_Status: "P",
@@ -51,7 +51,7 @@ export const success = {
     {
       Vendor_ID: "0000078122",
       Vendor_Name: "LOWES HOME CENTERS INC",
-      Sum_Monetary_Amount: "79.14",
+      Paid_Amount: "79.14",
       InvoiceID: "98512506062017",
       "PO-ID": "WJ00563007",
       Payment_Status: "P",
@@ -63,7 +63,7 @@ export const success = {
     {
       Vendor_ID: "0000078122",
       Vendor_Name: "LOWES HOME CENTERS INC",
-      Sum_Monetary_Amount: "-79.14",
+      Paid_Amount: "-79.14",
       InvoiceID: "98512508292017",
       "PO-ID": "WJ00563007",
       Payment_Status: "P",

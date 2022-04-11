@@ -26,10 +26,10 @@
         <p>{record.Payment_DT}</p>
       </div>
     </template>
-    <template if:true={record.Sum_Monetary_Amount}>
+    <template if:true={record.Paid_Amount}>
       <div class="slds-var-m-bottom_medium">
         <p class="slds-var-m-bottom_xx-small">{paymentLabel}</p>
-        <p>{record.Sum_Monetary_Amount}</p>
+        <p>{record.Paid_Amount}</p>
       </div>
     </template>
     <template if:true={record.Payment_Method}>
