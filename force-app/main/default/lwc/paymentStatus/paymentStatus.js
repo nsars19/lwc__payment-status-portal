@@ -182,14 +182,22 @@ export default class PaymentStatus extends LightningElement {
           ? "Paid"
           : "Unpaid",
       Paid_Amount: this.currencyFormatter(r.Paid_Amount),
-      labelText:
-        "Invoice ID: " +
-        r.InvoiceID +
-        " - " +
-        this.formatPayment(r.Paid_Amount),
+      labelText: this.getLabelText(r),
       poID: r["PO-ID"],
       Payment_Hold: r.Payment_Hold && r.Payment_Hold === "Y" ? "Yes" : ""
     }));
+  }
+
+  getLabelText(record) {
+    let text = `Invoice ID: ${record.InvoiceID} - `;
+
+    if (record.Payment_Status && record.Payment_Status.toLowerCase() === "p") {
+      text += this.formatPayment(record.Paid_Amount);
+    } else {
+      text += this.formatPayment(record.Pymnt_Gross_Amt);
+    }
+
+    return text;
   }
 
   handleClear() {
