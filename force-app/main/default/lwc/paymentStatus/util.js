@@ -44,3 +44,11 @@ export const formatPaymentDate = (d) => {
   const [year, month, day] = d.split("-");
   return `${month}-${day}-${year}`;
 };
+
+export const sortByInvoiceIDDesc = (a, b) => {
+  const A = Number(a.InvoiceID);
+  const B = Number(b.InvoiceID);
+  if (A > B) return -1;
+  if (A < B) return 1;
+  return 0;
+};

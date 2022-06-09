@@ -16,7 +16,7 @@ import getRecordTypeId from "@salesforce/apex/CaseUtil.getRecordTypeId";
 import getCaseOwnerId from "@salesforce/apex/CaseUtil.getCaseOwnerId";
 import getServiceId from "@salesforce/apex/CaseUtil.getServiceId";
 import Id from "@salesforce/user/Id";
-import { formatPaymentDate } from "./util";
+import { formatPaymentDate, sortByInvoiceIDDesc } from "./util";
 
 const RECORDS_PER_PAGE = 20;
 const DEFAULT_VENDOR = "";
@@ -60,7 +60,7 @@ export default class PaymentStatus extends LightningElement {
   get displayRecords() {
     const start = (this.currentPage - 1) * RECORDS_PER_PAGE;
     const end = start + RECORDS_PER_PAGE;
-    return this.records.slice(start, end);
+    return this.records.sort(sortByInvoiceIDDesc).slice(start, end);
   }
 
   get start() {
