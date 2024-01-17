@@ -1,17 +1,10 @@
 <template>
   <lightning-card title="Payment Status Portal" icon-name="standard:account">
     <div class="slds-var-m-around_medium">
-      <p class="slds-var-m-bottom_medium">
-        Use a percent sign (%) as a wildcard to match one or more values. The
-        wildcard can be used at the beginning and end of the value. eg.
-        university% will match any supplier name that begins with university.
-        %university will match any supplier that ends with university.
-        %university% will match any supplier than contains university.
-      </p>
       <label for="supplierName">
         Supplier Name
         <lightning-helptext
-          content="Use a percent sign (%) as a wildcard to match one or more values. The wildcard can be used at the beginning and end of the value. eg. university% will match any supplier name that begins with university. %university will match any supplier that ends with university. %university% will match any supplier than contains university."
+          content="Supplier Name is optional."
         ></lightning-helptext>
       </label>
       <lightning-input
@@ -19,10 +12,9 @@
         variant="label-hidden"
         value={vendorName}
         onchange={vendorNameChangeHandler}
-        required="true"
+        min-length="0"
         max-length="150"
         message-when-too-long="Only 150 characters are allowed."
-        message-when-value-missing="Please enter a vendor name."
       ></lightning-input>
       <label for="poNumber">
         PO Number
@@ -37,6 +29,7 @@
         onchange={poNumberChangeHandler}
         max-length="10"
         message-when-too-long="Only 10 characters are allowed."
+        required="true"
       ></lightning-input>
       <label for="invoiceId">
         Invoice Number
@@ -121,6 +114,9 @@
     </template>
     <template if:true={noRecords}>
       <p class="slds-var-p-around_medium">No records were found.</p>
+      <p if:true={boomiErrorMessage} class="slds-var-p-around_medium">
+        {boomiErrorMessage}
+      </p>
     </template>
     <template if:true={hasError}>
       <div class="slds-var-p-around_medium">

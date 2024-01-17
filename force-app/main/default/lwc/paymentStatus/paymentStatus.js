@@ -1,5 +1,5 @@
 import { LightningElement, wire } from "lwc";
-import { getRecord } from "lightning/uiRecordApi";
+import { getRecord, createRecord } from "lightning/uiRecordApi";
 import { client } from "./client";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import CASE_OBJECT from "@salesforce/schema/Case";
@@ -11,7 +11,6 @@ import CASE_DESCRIPTION_FIELD from "@salesforce/schema/Case.Description";
 import CASE_RECORDTYPEID_FIELD from "@salesforce/schema/Case.RecordTypeId";
 import CASE_OWNERID_FIELD from "@salesforce/schema/Case.OwnerId";
 import CASE_SERVICELINE_FIELD from "@salesforce/schema/Case.UITS_Service_Line__c";
-import { createRecord } from "lightning/uiRecordApi";
 import getRecordTypeId from "@salesforce/apex/CaseUtil.getRecordTypeId";
 import getCaseOwnerId from "@salesforce/apex/CaseUtil.getCaseOwnerId";
 import getServiceId from "@salesforce/apex/CaseUtil.getServiceId";
@@ -35,6 +34,7 @@ export default class PaymentStatus extends LightningElement {
   paginate = false;
   currentPage = 1;
   totalPages = 1;
+  boomiErrorMessage;
 
   @wire(getRecord, { recordId: Id, fields: ["User.Name"] })
   currentUser;
@@ -60,7 +60,7 @@ export default class PaymentStatus extends LightningElement {
   get displayRecords() {
     const start = (this.currentPage - 1) * RECORDS_PER_PAGE;
     const end = start + RECORDS_PER_PAGE;
-    return this.records.sort(sortByInvoiceIDDesc).slice(start, end);
+    return this.records.toSorted(sortByInvoiceIDDesc).slice(start, end);
   }
 
   get start() {
@@ -80,36 +80,35 @@ export default class PaymentStatus extends LightningElement {
   }
 
   poNumberChangeHandler = (event) =>
-    (this.poNumber = event.target.value.replace(/[ ]+/g, ""));
+    (this.poNumber = event.target.value.replace(/ +/g, ""));
   invoiceIdChangeHandler = (event) =>
-    (this.invoiceId = event.target.value.replace(/[ ]+/g, ""));
+    (this.invoiceId = event.target.value.replace(/ +/g, ""));
   vendorNameChangeHandler = (event) => (this.vendorName = event.target.value);
 
   async handleClick() {
     try {
       // clear error detail from previous errors, if any
       this.hasError = false;
+      // clear records from previous search
+      this.records = [];
 
       // check validation
-      if (!this.handleValidation()) return;
-
-      // vendor name is required, and either po number OR invoice id OR both are required
-      if ((!this.invoiceId && !this.poNumber) || !this.vendorName) {
-        this.records = [];
+      if (!this.handleValidation()) {
         this.hasError = true;
-        this.errorDetail.message =
-          "PO Number or Invoice ID must be filled out to check payment status.";
         return;
       }
 
       this.loading = true;
-      this.records = [];
       const boomiData = await client.post(this.createBody());
       this.fetchedRecords = true;
       this.loading = false;
 
       const vendorPortal = boomiData?.vendorPortal;
       const records = this.getRecordArray(vendorPortal);
+
+      if ("Error Message" in boomiData) {
+        this.boomiErrorMessage = boomiData["Error Message"];
+      }
 
       if (records) {
         const formattedRecords = this.formatRecords(records);
@@ -121,7 +120,7 @@ export default class PaymentStatus extends LightningElement {
             if (isNaN(val)) {
               val = 0;
             }
-            return (total += val);
+            return total + val;
           }, 0)
         );
 
@@ -139,14 +138,11 @@ export default class PaymentStatus extends LightningElement {
   }
 
   createBody() {
-    const body = {};
-
-    // only assign properties if they are truthy. When searching using the invoice ID with the presence of poNumber as an empty string
-    // will return an array of results with the vendor's name.
-    if (this.poNumber) body.PO_ID = this.poNumber.replace(/ /g, "");
-    if (this.invoiceId) body.INVOICE_ID = this.invoiceId.replace(/ /g, "");
-
-    body["Vendor Name"] = this.vendorName;
+    const body = {
+      "Vendor Name": this.vendorName.replace(/%/g, "").trim(),
+      PO_ID: this.poNumber.trim(),
+      INVOICE_ID: this.invoiceId?.trim() ?? ""
+    };
 
     return JSON.stringify(body);
   }
@@ -222,6 +218,7 @@ export default class PaymentStatus extends LightningElement {
     this.paginate = false;
     this.currentPage = 1;
     this.totalPages = 1;
+    this.boomiErrorMessage = undefined;
   }
 
   showNotification() {
@@ -248,6 +245,10 @@ export default class PaymentStatus extends LightningElement {
   }
 
   handleValidation() {
+    return this.validateHTML() && this.validateInputs();
+  }
+
+  validateHTML() {
     return [...this.template.querySelectorAll("lightning-input")].reduce(
       (validSoFar, inputCmp) => {
         inputCmp.reportValidity();
@@ -255,6 +256,36 @@ export default class PaymentStatus extends LightningElement {
       },
       true
     );
+  }
+
+  validateInputs() {
+    let isValid = true;
+
+    if (!this.poNumber.trim()) {
+      isValid = false;
+      this.errorDetail.message =
+        "PO Number must be filled out to check payment status.";
+    }
+
+    if (this.vendorName.trim() === "%" || this.vendorName.trim() === "%%") {
+      isValid = false;
+      this.errorDetail.message =
+        "You can not search for a supplier using only wildcards.";
+    }
+
+    if ((this.vendorName.trim().match(/%/g) ?? []).length > 2) {
+      isValid = false;
+      this.errorDetail.message =
+        "You can not use more than two wildcards. A wildcard may be used either before or after a word.";
+    }
+
+    if (!"abcdlw".includes(this.poNumber.trim().toLowerCase().slice(0, 1))) {
+      isValid = false;
+      this.errorDetail.message =
+        "The PO Number must have a valid prefix (A, B, C, D, L, W)";
+    }
+
+    return isValid;
   }
 
   async createCase(err) {
